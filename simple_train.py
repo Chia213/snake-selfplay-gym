@@ -29,7 +29,7 @@ def create_simple_env():
             )
             
             # Define action and observation spaces
-            self.action_space = self.snake_env.action_space.spaces[0]  # Only first snake
+            self.action_space = gym.spaces.Discrete(4)  # Single snake, 4 actions
             self.observation_space = self.snake_env.observation_space
             
         def reset(self, seed=None, options=None):
