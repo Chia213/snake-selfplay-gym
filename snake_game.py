@@ -199,6 +199,10 @@ class SnakeGame:
                 if alive:
                     rewards[i] += 5.0  # Survival bonus
         
+        # Convert to numpy arrays for compatibility
+        alive_status = np.array(alive_status, dtype=np.bool_)
+        rewards = np.array(rewards, dtype=np.float32)
+        
         return alive_status, rewards, self.game_over
     
     def get_state(self) -> np.ndarray:

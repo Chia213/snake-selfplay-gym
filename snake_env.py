@@ -91,8 +91,8 @@ class SnakeMultiplayerEnv(gym.Env):
         info = {
             'snake_info': self.game.get_snake_info(),
             'episode_steps': self.episode_steps,
-            'episode_rewards': self.episode_rewards.copy(),
-            'episode_scores': self.episode_scores.copy()
+            'episode_rewards': np.array(self.episode_rewards.copy(), dtype=np.float32),
+            'episode_scores': np.array(self.episode_scores.copy(), dtype=np.int32)
         }
         
         return observation, info
@@ -124,15 +124,18 @@ class SnakeMultiplayerEnv(gym.Env):
         info = {
             'snake_info': self.game.get_snake_info(),
             'episode_steps': self.episode_steps,
-            'episode_rewards': self.episode_rewards.copy(),
-            'episode_scores': self.episode_scores.copy(),
-            'alive_status': alive_status,
+            'episode_rewards': np.array(self.episode_rewards.copy(), dtype=np.float32),
+            'episode_scores': np.array(self.episode_scores.copy(), dtype=np.int32),
+            'alive_status': np.array(alive_status, dtype=np.bool_),
             'game_over': game_over
         }
         
         # Scale rewards if specified
         if self.reward_scale != 1.0:
             rewards = [r * self.reward_scale for r in rewards]
+        
+        # Convert rewards to numpy array to ensure compatibility
+        rewards = np.array(rewards, dtype=np.float32)
         
         return observation, rewards, terminated, truncated, info
     

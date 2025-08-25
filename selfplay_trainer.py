@@ -149,7 +149,7 @@ class SelfPlayTrainer:
         """Setup the RL model"""
         if self.algorithm == "PPO":
             self.model = PPO(
-                "CnnPolicy",
+                "MlpPolicy",  # Changed from CnnPolicy to MlpPolicy
                 self.env,
                 learning_rate=self.learning_rate,
                 verbose=1,
@@ -158,7 +158,7 @@ class SelfPlayTrainer:
             )
         elif self.algorithm == "A2C":
             self.model = A2C(
-                "CnnPolicy",
+                "MlpPolicy",  # Changed from CnnPolicy to MlpPolicy
                 self.env,
                 learning_rate=self.learning_rate,
                 verbose=1,
@@ -167,7 +167,7 @@ class SelfPlayTrainer:
             )
         elif self.algorithm == "SAC":
             self.model = SAC(
-                "CnnPolicy",
+                "MlpPolicy",  # Changed from CnnPolicy to MlpPolicy
                 self.env,
                 learning_rate=self.learning_rate,
                 verbose=1,
@@ -236,7 +236,7 @@ class SelfPlayTrainer:
         
         # Create a temporary model for this training session
         temp_model = type(self.model)(
-            "CnnPolicy",
+            "MlpPolicy",  # Changed from CnnPolicy to MlpPolicy
             vec_env,
             learning_rate=self.learning_rate,
             verbose=0,
