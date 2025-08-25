@@ -1,3 +1,6 @@
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning, module="pygame")
+
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
