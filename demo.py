@@ -24,9 +24,12 @@ def simple_agent(obs, legal_actions=None):
     # In practice, you'd implement food-seeking and collision-avoidance logic
     return np.random.randint(0, 4)
 
-def watch_ai_play(env, num_episodes=3, render_delay=0.1):
+def watch_ai_play(env, num_episodes=3, render_delay=0.05, fast_mode=False):
     """Watch AI agents play against each other"""
     print(f"Watching AI agents play {num_episodes} episodes...")
+    if fast_mode:
+        print("Fast mode enabled - minimal delays for quick viewing")
+        render_delay = 0.01
     
     for episode in range(num_episodes):
         print(f"\nEpisode {episode + 1}/{num_episodes}")
@@ -37,7 +40,10 @@ def watch_ai_play(env, num_episodes=3, render_delay=0.1):
         while True:
             # Render the environment
             env.render()
-            time.sleep(render_delay)
+            
+            # Only add delay if not in fast mode
+            if not fast_mode:
+                time.sleep(render_delay)
             
             # Generate random actions for all snakes
             actions = np.random.randint(0, 4, size=env.num_snakes)
@@ -47,8 +53,8 @@ def watch_ai_play(env, num_episodes=3, render_delay=0.1):
             episode_reward += np.mean(rewards)
             step_count += 1
             
-            # Print step info
-            if step_count % 10 == 0:
+            # Print step info less frequently to reduce console spam
+            if step_count % 20 == 0:
                 alive_count = sum(info['alive_status'])
                 print(f"Step {step_count}: Alive snakes: {alive_count}, "
                       f"Avg reward: {episode_reward/step_count:.3f}")
@@ -69,6 +75,7 @@ def manual_play(env, player_snake_id=0):
     print("Use WASD keys to move:")
     print("W - Up, S - Down, A - Left, D - Right")
     print("Q - Quit")
+    print("Press Enter after each move to continue...")
     
     obs, info = env.reset()
     episode_reward = 0
@@ -120,10 +127,10 @@ def test_environment():
     """Test basic environment functionality"""
     print("Testing Snake Multiplayer Environment...")
     
-    # Create environment
+    # Create environment with smaller field for faster testing
     env = SnakeMultiplayerEnv(
         num_snakes=2,
-        field_size=15,  # Smaller field for testing
+        field_size=10,  # Smaller field for faster testing
         render_mode="human"
     )
     
@@ -156,17 +163,21 @@ def main():
                        help='Demo mode')
     parser.add_argument('--snakes', type=int, default=2,
                        help='Number of snakes')
-    parser.add_argument('--field_size', type=int, default=15,
-                       help='Field size')
+    parser.add_argument('--field_size', type=int, default=12,
+                       help='Field size (smaller = faster)')
     parser.add_argument('--episodes', type=int, default=3,
                        help='Number of episodes to watch')
     parser.add_argument('--player_snake', type=int, default=0,
                        help='Snake ID controlled by player (in play mode)')
+    parser.add_argument('--fast', action='store_true',
+                       help='Enable fast mode for quick viewing')
     
     args = parser.parse_args()
     
     print("Snake Multiplayer Environment Demo")
     print("=" * 40)
+    print(f"Field size: {args.field_size}x{args.field_size} (smaller = faster)")
+    print(f"Number of snakes: {args.snakes}")
     
     if args.mode == 'test':
         test_environment()
@@ -175,16 +186,18 @@ def main():
         env = SnakeMultiplayerEnv(
             num_snakes=args.snakes,
             field_size=args.field_size,
-            render_mode="human"
+            render_mode="human",
+            fast_render=args.fast
         )
-        watch_ai_play(env, num_episodes=args.episodes)
+        watch_ai_play(env, num_episodes=args.episodes, fast_mode=args.fast)
         env.close()
     
     elif args.mode == 'play':
         env = SnakeMultiplayerEnv(
             num_snakes=args.snakes,
             field_size=args.field_size,
-            render_mode="human"
+            render_mode="human",
+            fast_render=True
         )
         manual_play(env, player_snake_id=args.player_snake)
         env.close()

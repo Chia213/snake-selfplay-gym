@@ -30,7 +30,8 @@ class SnakeMultiplayerEnv(gym.Env):
         food_count: int = 3,
         render_mode: Optional[str] = None,
         max_steps: Optional[int] = None,
-        reward_scale: float = 1.0
+        reward_scale: float = 1.0,
+        fast_render: bool = False
     ):
         super().__init__()
         
@@ -39,6 +40,7 @@ class SnakeMultiplayerEnv(gym.Env):
         self.food_count = food_count
         self.render_mode = render_mode
         self.reward_scale = reward_scale
+        self.fast_render = fast_render
         
         # Initialize the game
         self.game = SnakeGame(field_size, num_snakes, food_count)
@@ -62,10 +64,23 @@ class SnakeMultiplayerEnv(gym.Env):
         
         # Initialize pygame for rendering if needed
         if render_mode == "human":
-            pygame.init()
-            self.screen = pygame.display.set_mode((field_size * 20, field_size * 20))
+            # Only initialize pygame once to avoid repeated initialization delays
+            if not pygame.get_init():
+                pygame.init()
+            
+            # Use smaller cell size for faster rendering on large fields
+            cell_size = 15 if field_size > 20 else 20
+            self.cell_size = cell_size
+            
+            self.screen = pygame.display.set_mode((field_size * cell_size, field_size * cell_size))
             pygame.display.set_caption("Snake Multiplayer")
             self.clock = pygame.time.Clock()
+            
+            # Set faster FPS for better performance
+            if fast_render:
+                self.metadata["render_fps"] = 30
+            else:
+                self.metadata["render_fps"] = 10
         
         # Track episode statistics
         self.episode_steps = 0

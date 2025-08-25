@@ -1,107 +1,119 @@
-# Snake Multiplayer Self-Play Environment
+# Snake Multiplayer Self-Play Gym
 
-A Gymnasium environment implementing a multiplayer Snake game with self-play reinforcement learning capabilities. This project demonstrates advanced multi-agent reinforcement learning techniques including self-play training and policy distribution approaches.
+A fun multiplayer Snake game where you can play against AI agents or watch them compete! Built with reinforcement learning capabilities.
 
-## Features
+## 🚀 Quick Start
 
-- **Multiplayer Snake Game**: Classic Snake gameplay with multiple snakes competing on the same field
-- **Gymnasium Environment**: Fully compatible with the Gymnasium API for easy integration with RL algorithms
-- **Self-Play Training**: Implements various self-play strategies to overcome training instability
-- **Scalable Architecture**: Start with 2 snakes and scale to any number of agents
-- **Multiple RL Algorithms**: Support for PPO, A2C, and other Stable-Baselines3 algorithms
-- **Visualization Tools**: Real-time game rendering and training progress monitoring
-
-## Installation
-
+### 1. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-## Quick Start
+### 2. Choose Your Mode
 
-```python
-import gymnasium as gym
-from snake_env import SnakeMultiplayerEnv
+#### 🎮 **Watch AI Agents Play**
+```bash
+python demo.py --mode watch
+```
+- Watch 2 AI snakes compete automatically
+- Default: 3 episodes, 12x12 field
+- **Fast Mode**: `--fast` flag for minimal delays
+- Customize: `--snakes 4 --field_size 20 --episodes 5`
 
-# Create environment
-env = SnakeMultiplayerEnv(num_snakes=2, field_size=20)
+#### 🕹️ **Play Against AI**
+```bash
+python demo.py --mode play
+```
+- You control snake 0, AI controls the others
+- **Controls**: W (up), S (down), A (left), D (right), Q (quit)
+- Customize: `--snakes 3 --field_size 12 --player_snake 1`
 
-# Basic usage
-obs, info = env.reset()
-action = env.action_space.sample()
-obs, reward, terminated, truncated, info = env.step(action)
+#### 🧪 **Test Environment**
+```bash
+python demo.py --mode test
+```
+- Quick test to ensure everything works
+
+## 🎯 Game Modes Explained
+
+| Mode | Description | Best For | Performance |
+|------|-------------|----------|-------------|
+| `watch` | AI vs AI competition | Entertainment, learning | Use `--fast` for speed |
+| `play` | Human vs AI | Interactive gaming | Optimized by default |
+| `test` | Environment validation | Troubleshooting | Small field for speed |
+
+## 🚀 **Performance Tips**
+
+- **Use `--fast` flag** for watch mode: `python demo.py --mode watch --fast`
+- **Smaller field sizes** = faster rendering: `--field_size 10` or `12`
+- **Fewer snakes** = better performance: Start with `--snakes 2`
+- **Default field size** is now 12x12 (was 15x15) for better performance
+
+## 🎲 Game Features
+
+- **Multiplayer**: 2-4 snakes on the same field
+- **Food**: Multiple food items to grow your snake
+- **Scoring**: +1 for food, -1 for collisions
+- **Field Size**: Configurable (default 15x15)
+- **Visual**: Real-time pygame rendering
+
+## 🧠 Training AI (Optional)
+
+If you want to train your own AI agents:
+
+```bash
+python simple_train.py
 ```
 
-## Training with Self-Play
+This trains a PPO agent for 10,000 steps and saves checkpoints.
 
-```python
-from stable_baselines3 import PPO
-from selfplay_trainer import SelfPlayTrainer
+## 🧪 **Performance Testing**
 
-# Initialize trainer
-trainer = SelfPlayTrainer(
-    env_id="snake_multiplayer",
-    algorithm="PPO",
-    selfplay_strategy="policy_distribution"
-)
+Test your setup performance and get optimization recommendations:
 
-# Start training
-trainer.train(total_timesteps=1000000)
+```bash
+python test_performance.py
 ```
 
-## Self-Play Strategies
+This will test different configurations and show you the best settings for your system.
 
-1. **Current vs Past**: Train current policy against a distribution of past policies
-2. **Fictitious Self-Play**: Use a mixture of best responses
-3. **Population-Based**: Maintain a population of diverse policies
-4. **Curriculum Learning**: Gradually increase difficulty
-
-## Environment Details
-
-- **Action Space**: Discrete (4 actions: up, down, left, right)
-- **Observation Space**: Multi-dimensional array representing game state
-- **Reward Structure**: 
-  - +1 for eating food
-  - -1 for collision/death
-  - Small negative reward for each step to encourage efficiency
-
-## Project Structure
+## 📁 Project Structure
 
 ```
 snake-selfplay-gym/
-├── snake_env.py              # Main environment implementation
-├── selfplay_trainer.py       # Self-play training logic
-├── snake_game.py             # Core game mechanics
-├── agents/                   # Different agent implementations
-├── training/                 # Training scripts and utilities
-├── evaluation/               # Evaluation and visualization tools
-└── experiments/              # Experiment configurations
+├── demo.py              # 🎮 Main demo script - START HERE!
+├── snake_env.py         # Gymnasium environment
+├── snake_game.py        # Core game logic
+├── simple_train.py      # Basic training script
+├── test_performance.py  # 🧪 Performance testing tool
+└── requirements.txt     # Dependencies
 ```
 
-## Research Contributions
+## 🔧 Customization Examples
 
-This implementation addresses key challenges in multi-agent reinforcement learning:
+```bash
+# Watch 4 snakes on a large field
+python demo.py --mode watch --snakes 4 --field_size 25
 
-- **Self-Play Instability**: Implements various techniques to stabilize training
-- **Policy Distribution**: Maintains diverse opponent strategies
-- **Scalable Multi-Agent**: Efficient handling of variable numbers of agents
-- **Competitive Learning**: Emergence of complex strategies through competition
+# Play as snake 1 against 3 AI opponents
+python demo.py --mode play --snakes 4 --player_snake 1
 
-## Citation
-
-If you use this environment in your research, please cite:
-
-```bibtex
-@misc{snake_multiplayer_selfplay,
-  title={Snake Multiplayer Self-Play Environment},
-  author={Your Name},
-  year={2024},
-  url={https://github.com/yourusername/snake-selfplay-gym}
-}
+# Quick test with small field
+python demo.py --mode test --field_size 10
 ```
 
-## License
+## ❓ Troubleshooting
 
-MIT License - see LICENSE file for details.
+- **"pygame not found"**: Run `pip install pygame`
+- **"gymnasium not found"**: Run `pip install gymnasium`
+- **Black screen**: Try `--field_size 15` for smaller fields
+
+## 📜 License
+
+MIT License - Feel free to use, modify, and distribute!
+
+---
+
+**Ready to play?** Just run `python demo.py --mode watch` and enjoy! 🐍
 
 
